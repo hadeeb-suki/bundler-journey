@@ -1,0 +1,1 @@
+https://developers.google.com/tag-platform/gtagjs
