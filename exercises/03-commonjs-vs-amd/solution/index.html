@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommonJS in Browser - Working Solution</title>
+</head>
+<body>
+    <h1>CommonJS Module System</h1>
+    <p>Open the console to see the calculator working!</p>
+    
+    <!-- Load the module loader first -->
+    <script src="loader.js"></script>
+    <!-- Then load the modules -->
+    <script src="src/utils.js"></script>
+    <script src="src/calculator.js"></script>
+    <script src="src/index.js"></script>
+    <!-- Execute the entry point -->
+    <script>
+        require('./index');
+    </script>
+</body>
+</html>
