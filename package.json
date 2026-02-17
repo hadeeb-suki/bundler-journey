@@ -1,0 +1,9 @@
+{
+  "name": "javascript-bundler-journey",
+  "private": true,
+  "version": "1.0.0",
+  "description": "JavaScript Bundling",
+  "devDependencies": {
+    "serve": "^14.2.5"
+  }
+}
