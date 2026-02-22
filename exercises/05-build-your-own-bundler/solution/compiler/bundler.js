@@ -20,8 +20,14 @@ import { traverse, parse, transformFromAstSync } from '@babel/core';
 function createAsset(filename) {
 
     // Hint: Use fs.readFileSync to read the file
-    // Hint: Use parse from @babel/core to create AST with { sourceType: 'module' }
+    const content = fs.readFileSync(filename, 'utf-8');
 
+    // Hint: Use parse from @babel/core to create AST with { sourceType: 'module' }
+    const ast = parse(content, {
+        sourceType: 'module'
+    });
+
+    if (!ast) throw new Error('Failed to parse AST');
 
     // Hint: Use traverse from @babel/core to find ImportDeclaration nodes
 
@@ -29,12 +35,25 @@ function createAsset(filename) {
     const dependencies = new Set();
 
 
+    traverse(ast, {
+        ImportDeclaration: ({ node }) => {
+            dependencies.add(node.source.value);
+        }
+    });
 
     // Hint: Use transformFromAstSync to convert AST to CommonJS
     // Use @babel/plugin-transform-modules-commonjs plugin
-    const code = ""
+    const result = transformFromAstSync(ast, undefined, {
+        plugins: [['@babel/plugin-transform-modules-commonjs', { strict: true }]],
 
-    return { dependencies, code }
+    });
+
+    if (!result || !result.code) throw new Error('Failed to transform AST');
+
+    const { code } = result;
+
+
+    return { dependencies, code };
 }
 
 // Step 2: Create Module Graph
@@ -53,6 +72,22 @@ function createModuleGraph(rootDirectory, entry) {
     // Hint: Use a queue (array) for BFS
     // Hint: Use path.resolve and path.dirname to resolve relative paths
     // Hint: Assign a the relative path as the id
+    const absolutePath = path.resolve(rootDirectory, entry);
+    const mainAsset = createAsset(absolutePath);
+    const queue = [{ ...mainAsset, id: entry }];
+
+    // Find all dependencies and add them to the queue
+    for (let i = 0; i < queue.length; i++) {
+        const asset = queue[i];
+        // Resolve dependencies
+        asset.dependencies.forEach(relativePath => {
+            const absolutePath = path.join(rootDirectory, relativePath);
+            const child = createAsset(absolutePath);
+            queue.push({ ...child, id: relativePath });
+        });
+    }
+
+    return queue;
 }
 
 // Step 3: Bundle
@@ -68,11 +103,16 @@ function bundle(graph) {
 
     // Hint: Create module code for each item in the graph
     // define("id of the module", function(module, exports,require) { source code of the module })
-
+    const modules = graph.map(asset => {
+        return (`define("${asset.id}", function(module,exports,require) {
+                ${asset.code}
+            });`);
+    });
     // Merge all module code together
-    const moduleCode = ""
+    const moduleCode = modules.join('\n')
+
     // Hint: Read "./compiler/loader.js" as string
-    const loaderCode = ""
+    const loaderCode = fs.readFileSync('./compiler/loader.js', 'utf-8');
     // Hint: Merge everything together and return the final bundle string
     return `${loaderCode}\n${moduleCode}`
 }
