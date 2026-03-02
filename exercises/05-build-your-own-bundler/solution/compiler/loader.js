@@ -29,6 +29,3 @@ function require(id) {
   return module.exports;
 }
 
-// Make require and define available globally
-window.define = define;
-window.require = require;
