@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { traverse, parse, transformFromAstSync } from '@babel/core';
 
-
 // Step 1: Create Asset
 // This function should:
 // 1. Read the file content
@@ -72,22 +71,25 @@ function createModuleGraph(rootDirectory, entry) {
     // Hint: Use a queue (array) for BFS
     // Hint: Use path.resolve and path.dirname to resolve relative paths
     // Hint: Assign a the relative path as the id
-    const absolutePath = path.resolve(rootDirectory, entry);
-    const mainAsset = createAsset(absolutePath);
-    const queue = [{ ...mainAsset, id: entry }];
+    const queue = [entry];
 
-    // Find all dependencies and add them to the queue
-    for (let i = 0; i < queue.length; i++) {
-        const asset = queue[i];
-        // Resolve dependencies
+    const graph = [];
+
+    while (queue.length > 0) {
+        // Loop through the queue and create an asset for each entry
+        // Add the asset to the graph
+        const entry = queue.shift();
+        const asset = createAsset(path.resolve(rootDirectory, entry));
+        graph.push({ id: `./${entry}`, code: asset.code });
+        // For each dependency,
+        //  > resolve the relative path to the root directory and add it to the queue
         asset.dependencies.forEach(relativePath => {
-            const absolutePath = path.join(rootDirectory, relativePath);
-            const child = createAsset(absolutePath);
-            queue.push({ ...child, id: relativePath });
+            const relativePathToRoot = path.join(path.dirname(entry), relativePath);
+            queue.push(relativePathToRoot);
         });
     }
 
-    return queue;
+    return graph;
 }
 
 // Step 3: Bundle
@@ -119,12 +121,12 @@ function bundle(graph) {
 
 // Main execution
 const rootDirectory = path.join(process.cwd(), 'scripts');
-const entry = "./index.js";
+const entry = "index.js";
 const graph = createModuleGraph(rootDirectory, entry);
 const bundledCode = bundle(graph);
 
 // Start running the entry point
-const entryCode = `require("${entry}")`;
+const entryCode = `require("./${entry}")`;
 
 const fullCode = `${bundledCode};\n${entryCode}`;
 

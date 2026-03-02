@@ -50,9 +50,22 @@ function createAsset(filename) {
  * @returns {Array<{ id: string, code: string }>}
  */
 function createModuleGraph(rootDirectory, entry) {
-    // Hint: Use a queue (array) for BFS
-    // Hint: Use path.resolve and path.dirname to resolve relative paths
-    // Hint: Assign a the relative path as the id
+    // Hint: Use a queue (array) for traversal
+    // Hint: Use path.resolve, path.dirname and path.join to resolve relative paths
+    // Hint: Assign the relative path from rootDirectory as the id
+    const queue = [entry];
+    const graph = [];
+
+    while (queue.length > 0) {
+        // Loop through the queue and create an asset for each entry
+        // Add the asset to the graph
+
+
+        // For each dependency,
+        //  > resolve the relative path to the root directory and add it to the queue
+    }
+
+    return graph;
 }
 
 // Step 3: Bundle
@@ -79,12 +92,12 @@ function bundle(graph) {
 
 // Main execution
 const rootDirectory = path.join(process.cwd(), 'scripts');
-const entry = "./index.js";
+const entry = "index.js";
 const graph = createModuleGraph(rootDirectory, entry);
 const bundledCode = bundle(graph);
 
 // Start running the entry point
-const entryCode = `require("${entry}")`;
+const entryCode = `require("./${entry}")`;
 
 const fullCode = `${bundledCode};\n${entryCode}`;
 
