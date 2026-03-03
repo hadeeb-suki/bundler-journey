@@ -1,0 +1,12 @@
+{
+  "name": "flat-bundles-explainer",
+  "version": "1.0.0",
+  "description": "Explainer for flat bundles",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c rollup.config.js"
+  },
+  "devDependencies": {
+    "rollup": "^4.59.0"
+  }
+}

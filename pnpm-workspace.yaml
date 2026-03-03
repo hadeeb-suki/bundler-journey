@@ -1,6 +1,7 @@
 packages:
   - exercises/*/problem
   - exercises/*/solution
+  - exercises/*/explainer
 
 onlyBuiltDependencies:
   - esbuild
