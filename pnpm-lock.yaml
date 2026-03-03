@@ -30,6 +30,24 @@ importers:
         specifier: ^7.28.6
         version: 7.28.6(@babel/core@7.29.0)
 
+  exercises/06-esmodule-bundler/problem:
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.29.0
+        version: 7.29.0
+      '@babel/plugin-transform-modules-commonjs':
+        specifier: ^7.28.6
+        version: 7.28.6(@babel/core@7.29.0)
+
+  exercises/06-esmodule-bundler/solution:
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.29.0
+        version: 7.29.0
+      '@babel/plugin-transform-modules-commonjs':
+        specifier: ^7.28.6
+        version: 7.28.6(@babel/core@7.29.0)
+
 packages:
 
   '@babel/code-frame@7.29.0':
