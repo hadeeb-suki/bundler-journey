@@ -54,6 +54,7 @@ function createModuleGraph(rootDirectory, entry) {
     // Hint: Use path.resolve, path.dirname and path.join to resolve relative paths
     // Hint: Assign the relative path from rootDirectory as the id
     const queue = [entry];
+    /**@type {Array<{ id: string, code: string }>} */
     const graph = [];
 
     while (queue.length > 0) {
