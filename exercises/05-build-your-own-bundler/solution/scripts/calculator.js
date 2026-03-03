@@ -1,4 +1,3 @@
-// Calculator module (CommonJS format)
 import { add, subtract, multiply } from "./utils.js";
 
 function calculate(operation, a, b) {
